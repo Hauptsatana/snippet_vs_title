@@ -25,19 +25,108 @@ public class Frame_Main extends javax.swing.JFrame {
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        bgr_SearchEngine = new javax.swing.ButtonGroup();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel2 = new javax.swing.JPanel();
+        pnl_SearchEngine = new javax.swing.JPanel();
+        rbtn_Yandex = new javax.swing.JRadioButton();
+        rbtn_Google = new javax.swing.JRadioButton();
+        btn_Search = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tarea_Keywords = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        table_Results = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        java.awt.GridBagLayout jPanel2Layout = new java.awt.GridBagLayout();
+        jPanel2Layout.columnWidths = new int[] {0, 10, 0};
+        jPanel2Layout.rowHeights = new int[] {0, 10, 0};
+        jPanel2.setLayout(jPanel2Layout);
+
+        pnl_SearchEngine.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Search engine", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+        java.awt.GridBagLayout jPanel1Layout = new java.awt.GridBagLayout();
+        jPanel1Layout.columnWidths = new int[] {0};
+        jPanel1Layout.rowHeights = new int[] {0, 5, 0};
+        pnl_SearchEngine.setLayout(jPanel1Layout);
+
+        bgr_SearchEngine.add(rbtn_Yandex);
+        rbtn_Yandex.setText("Yandex");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 5, 30);
+        pnl_SearchEngine.add(rbtn_Yandex, gridBagConstraints);
+
+        bgr_SearchEngine.add(rbtn_Google);
+        rbtn_Google.setSelected(true);
+        rbtn_Google.setText("Google");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 0, 30);
+        pnl_SearchEngine.add(rbtn_Google, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel2.add(pnl_SearchEngine, gridBagConstraints);
+
+        btn_Search.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        btn_Search.setText("Search");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel2.add(btn_Search, gridBagConstraints);
+
+        tarea_Keywords.setColumns(20);
+        tarea_Keywords.setRows(5);
+        jScrollPane1.setViewportView(tarea_Keywords);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel2.add(jScrollPane1, gridBagConstraints);
+
+        jSplitPane1.setTopComponent(jPanel2);
+
+        table_Results.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(table_Results);
+
+        jSplitPane1.setRightComponent(jScrollPane2);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        getContentPane().add(jSplitPane1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -78,5 +167,16 @@ public class Frame_Main extends javax.swing.JFrame {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgr_SearchEngine;
+    private javax.swing.JButton btn_Search;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JPanel pnl_SearchEngine;
+    private javax.swing.JRadioButton rbtn_Google;
+    private javax.swing.JRadioButton rbtn_Yandex;
+    private javax.swing.JTable table_Results;
+    private javax.swing.JTextArea tarea_Keywords;
     // End of variables declaration//GEN-END:variables
 }
