@@ -5,17 +5,67 @@
  */
 package org.foladesoft.snippet_vs_title;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 /**
  *
  * @author Vladislav
  */
 public class Frame_Main extends javax.swing.JFrame {
 
+	private final String GOOGLE_SEARCH_PREFIX = "https://www.google.com/search?num=10&q=";
+	private final String YANDEX_SEARCH_PREFIX = "https://yandex.ru/search/?text=";
+
+	private final String USER_AGENT = "Mozille/5.0";
+	private final int TIMEOUT = 20000;
+
+	//private final String USER_AGENT = "Google Chrome/54.0.2840.99 m";
 	/**
 	 * Creates new form Frame_Main
 	 */
 	public Frame_Main() {
 		initComponents();
+	}
+
+	public synchronized void addTitlePair(DefaultMutableTreeNode queryNode, String link, String snippetTitle, String actualTitle) {
+		DefaultMutableTreeNode linkNode = new DefaultMutableTreeNode(link);
+		linkNode.add(new DefaultMutableTreeNode("Snippet: " + snippetTitle));
+		linkNode.add(new DefaultMutableTreeNode("Title: " + actualTitle));
+		queryNode.add(linkNode);
+	}
+
+	private void expandAllNodes(JTree tree) {
+		int j = tree.getRowCount();
+		int i = 0;
+		while (i < j) {
+			tree.expandRow(i);
+			i += 1;
+			j = tree.getRowCount();
+		}
 	}
 
 	/**
@@ -36,8 +86,8 @@ public class Frame_Main extends javax.swing.JFrame {
         btn_Search = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tarea_Keywords = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        table_Results = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tree_Results = new javax.swing.JTree();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -57,6 +107,7 @@ public class Frame_Main extends javax.swing.JFrame {
 
         bgr_SearchEngine.add(rbtn_Yandex);
         rbtn_Yandex.setText("Yandex");
+        rbtn_Yandex.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -82,6 +133,11 @@ public class Frame_Main extends javax.swing.JFrame {
 
         btn_Search.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         btn_Search.setText("Search");
+        btn_Search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_SearchActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -90,6 +146,7 @@ public class Frame_Main extends javax.swing.JFrame {
 
         tarea_Keywords.setColumns(20);
         tarea_Keywords.setRows(5);
+        tarea_Keywords.setText("купить наушники");
         jScrollPane1.setViewportView(tarea_Keywords);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -103,20 +160,11 @@ public class Frame_Main extends javax.swing.JFrame {
 
         jSplitPane1.setTopComponent(jPanel2);
 
-        table_Results.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(table_Results);
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        tree_Results.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jScrollPane3.setViewportView(tree_Results);
 
-        jSplitPane1.setRightComponent(jScrollPane2);
+        jSplitPane1.setRightComponent(jScrollPane3);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -130,6 +178,75 @@ public class Frame_Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SearchActionPerformed
+
+		final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Results");
+		final DefaultTreeModel dtm = new DefaultTreeModel(root);
+
+		final ExecutorService es = Executors.newFixedThreadPool(10);
+
+		for (String queryLine : tarea_Keywords.getText().split("\\n")) {
+			if (!queryLine.trim().isEmpty()) {
+				try {
+					DefaultMutableTreeNode queryNode = new DefaultMutableTreeNode(queryLine);
+					root.add(queryNode);
+					// Reading html as stream
+//					final URL url = new URL(GOOGLE_SEARCH_PREFIX + URLEncoder.encode(queryLine, "UTF-8"));
+//					final URLConnection conn = url.openConnection();
+//					conn.setConnectTimeout(60000);
+//					conn.addRequestProperty("User-Agent", "Mozilla/5.0");
+//
+//					BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//					File outfile = File.createTempFile(queryLine + " - ", " - google.html");
+//					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile)));
+//
+//					String responseLine;
+//					while ((responseLine = br.readLine()) != null) {
+//						bw.write(responseLine);
+//					}
+					Document doc = Jsoup.connect(GOOGLE_SEARCH_PREFIX + URLEncoder.encode(queryLine, "UTF-8")).userAgent(USER_AGENT).timeout(TIMEOUT).get();
+					Elements elems = doc.select("div.g");
+					for (int i = 0; i < elems.size(); i++) {
+						final Element snippetDiv = elems.get(i);
+						es.execute(new Runnable() {
+							@Override
+							public void run() {
+								Element a = snippetDiv.select("h3.r > a").get(0);
+								String snippetTitle = a.text();
+								String snippetLink = a.attr("href");
+								// trim google-declared prefix and suffix
+								snippetLink = snippetLink.substring(7, snippetLink.indexOf("&sa"));
+								//System.out.println(snippetLink);
+								try {
+									String actualTitle = Jsoup.connect(snippetLink).userAgent(USER_AGENT).timeout(TIMEOUT).get().select("head > title").get(0).text();
+									addTitlePair(queryNode, snippetLink, snippetTitle, actualTitle);
+								} catch (IOException ex) {
+									Logger.getLogger(Frame_Main.class.getName()).log(Level.SEVERE, null, ex);
+								}
+							}
+						});
+					}
+
+				} catch (IOException ex) {
+					Logger.getLogger(Frame_Main.class.getName()).log(Level.SEVERE, null, ex);
+				}
+			}
+		}
+
+		try {
+			es.shutdown();
+			boolean finished;
+			do {
+				finished = es.awaitTermination(1000, TimeUnit.MILLISECONDS);
+			} while (!finished);
+			tree_Results.setModel(dtm);
+			expandAllNodes(tree_Results);
+			
+		} catch (InterruptedException ex) {
+			Logger.getLogger(Frame_Main.class.getName()).log(Level.SEVERE, null, ex);
+		}
+    }//GEN-LAST:event_btn_SearchActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -171,12 +288,12 @@ public class Frame_Main extends javax.swing.JFrame {
     private javax.swing.JButton btn_Search;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JPanel pnl_SearchEngine;
     private javax.swing.JRadioButton rbtn_Google;
     private javax.swing.JRadioButton rbtn_Yandex;
-    private javax.swing.JTable table_Results;
     private javax.swing.JTextArea tarea_Keywords;
+    private javax.swing.JTree tree_Results;
     // End of variables declaration//GEN-END:variables
 }
