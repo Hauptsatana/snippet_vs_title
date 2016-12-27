@@ -26,8 +26,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.10.1</version>
         </dependency>
-        
-    </dependencies>
+          <dependency>
+               <groupId>me.xdrop</groupId>
+               <artifactId>fuzzywuzzy</artifactId>
+               <version>1.1.5</version>
+          </dependency>
+     </dependencies>
     
     <build>
 	<finalName>omnibus_client</finalName>
