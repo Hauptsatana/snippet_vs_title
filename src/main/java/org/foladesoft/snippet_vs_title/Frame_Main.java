@@ -5,18 +5,7 @@
  */
 package org.foladesoft.snippet_vs_title;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.LinkedList;
-import java.util.List;
+import java.awt.event.MouseEvent;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -28,10 +17,6 @@ import java.util.logging.Logger;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 /**
  *
@@ -136,7 +121,7 @@ public class Frame_Main extends javax.swing.JFrame {
 
         tarea_Keywords.setColumns(20);
         tarea_Keywords.setRows(5);
-        tarea_Keywords.setText("купить наушники");
+        tarea_Keywords.setText("купить наушники\nнаушники в Тюмени\nкрасные наушники купить");
         jScrollPane1.setViewportView(tarea_Keywords);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -152,6 +137,11 @@ public class Frame_Main extends javax.swing.JFrame {
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         tree_Results.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        tree_Results.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tree_ResultsMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tree_Results);
 
         jSplitPane1.setRightComponent(jScrollPane3);
@@ -210,10 +200,15 @@ public class Frame_Main extends javax.swing.JFrame {
             expandAllNodes(tree_Results);
 
         } catch (InterruptedException ex) {
-            Logger.getLogger(Frame_Main.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Frame_Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_SearchActionPerformed
+
+    private void tree_ResultsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tree_ResultsMouseClicked
+		if (evt.getClickCount() > 1 && evt.getButton() == MouseEvent.BUTTON3) {
+			expandAllNodes(tree_Results);
+		}
+    }//GEN-LAST:event_tree_ResultsMouseClicked
 
     /**
      * @param args the command line arguments

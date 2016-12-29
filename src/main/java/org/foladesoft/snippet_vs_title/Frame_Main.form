@@ -355,7 +355,7 @@
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="&#x43a;&#x443;&#x43f;&#x438;&#x442;&#x44c; &#x43d;&#x430;&#x443;&#x448;&#x43d;&#x438;&#x43a;&#x438;"/>
+                    <Property name="text" type="java.lang.String" value="&#x43a;&#x443;&#x43f;&#x438;&#x442;&#x44c; &#x43d;&#x430;&#x443;&#x448;&#x43d;&#x438;&#x43a;&#x438;&#xa;&#x43d;&#x430;&#x443;&#x448;&#x43d;&#x438;&#x43a;&#x438; &#x432; &#x422;&#x44e;&#x43c;&#x435;&#x43d;&#x438;&#xa;&#x43a;&#x440;&#x430;&#x441;&#x43d;&#x44b;&#x435; &#x43d;&#x430;&#x443;&#x448;&#x43d;&#x438;&#x43a;&#x438; &#x43a;&#x443;&#x43f;&#x438;&#x442;&#x44c;"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -680,6 +680,9 @@
                   <TreeModel code=""/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tree_ResultsMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

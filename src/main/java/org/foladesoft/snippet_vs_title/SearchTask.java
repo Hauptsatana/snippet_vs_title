@@ -66,7 +66,7 @@ public class SearchTask implements Runnable {
     public void run() {
         try {
             ExecutorService es = Executors.newCachedThreadPool();
-            DefaultMutableTreeNode queryNode = new DefaultMutableTreeNode();
+            DefaultMutableTreeNode queryNode = new DefaultMutableTreeNode(queryLine);
 
             List<FutureTask<Double>> tasks = new LinkedList<>();
             // Get document via Jsoup and parse
@@ -81,25 +81,22 @@ public class SearchTask implements Runnable {
                 // trim google-declared prefix and suffix
                 snippetLink = snippetLink.substring(7, snippetLink.indexOf("&sa"));
 
-                FutureTask<Double> task = new FutureTask<>(
-                        new WebPageToQueryCompare(snippetTitle, snippetLink, queryNode));
-                tasks.add(task);
-                es.execute(task);
+                es.execute(new TermToContentComparer(queryLine, snippetLink, queryNode));
             }
 
             // Computing the average
-            es.shutdown();
-            double sum = 0;
-            int successfulComps = 0;
-            for (FutureTask<Double> task : tasks) {
-                try {
-                    sum += task.get();
-                    successfulComps++;
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(Frame_Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            queryNode.setUserObject(queryLine + " - " + (sum / successfulComps));
+//            es.shutdown();
+//            double sum = 0;
+//            int successfulComps = 0;
+//            for (FutureTask<Double> task : tasks) {
+//                try {
+//                    sum += task.get();
+//                    successfulComps++;
+//                } catch (InterruptedException | ExecutionException ex) {
+//                    Logger.getLogger(Frame_Main.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            queryNode.setUserObject(queryLine + " - " + (sum / successfulComps));
             synchronized (root) {
                 root.add(queryNode);
             }
