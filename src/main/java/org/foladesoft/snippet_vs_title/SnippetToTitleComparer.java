@@ -15,13 +15,13 @@ import org.jsoup.Jsoup;
  *
  * @author haupt_000
  */
-public class WebPageToQueryCompare implements Callable<Double> {
+public class SnippetToTitleComparer implements Callable<Double> {
 
     private String snippetTitle;
     private String link;
     private DefaultMutableTreeNode root;
 
-    public WebPageToQueryCompare(String query, String link, DefaultMutableTreeNode root) {
+    public SnippetToTitleComparer(String query, String link, DefaultMutableTreeNode root) {
         this.snippetTitle = query;
         this.link = link;
         this.root = root;
